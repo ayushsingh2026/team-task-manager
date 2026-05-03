@@ -57,7 +57,7 @@ mongoose
     } else {
       console.log("CORS origins: all (set CORS_ORIGINS to restrict)");
     }
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server running on port ${PORT}`);
     });
   })
