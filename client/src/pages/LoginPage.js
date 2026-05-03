@@ -305,7 +305,14 @@ function LoginPage() {
       localStorage.setItem("user", JSON.stringify(data.user));
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err.request) {
+        const attemptedUrl = `${err.config?.baseURL || ""}${err.config?.url || ""}`;
+        setError(`Network error. Could not reach ${attemptedUrl || "the API endpoint"}.`);
+      } else {
+        setError(err.message || "Login failed");
+      }
     }
   };
 
