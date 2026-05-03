@@ -1,6 +1,10 @@
 import axios from "axios";
 
 const getApiBaseUrl = () => {
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+    return "/api";
+  }
+
   const raw = process.env.REACT_APP_API_URL?.trim();
   if (!raw) return "/api";
 
