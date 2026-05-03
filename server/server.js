@@ -33,7 +33,44 @@ app.use(
 app.use(express.json());
 
 app.get("/", (_req, res) => {
-  res.json({ message: "Team Task Manager API is running" });
+  const html = `
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Team Task Manager API</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 0; padding: 24px; background: #f7f7f7; color: #1f2937; }
+          .card { max-width: 760px; margin: 0 auto; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; }
+          h1 { margin-top: 0; }
+          .ok { color: #065f46; font-weight: 700; }
+          code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+          ul { line-height: 1.8; }
+          a { color: #2563eb; text-decoration: none; }
+          a:hover { text-decoration: underline; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h1>Team Task Manager API</h1>
+          <p class="ok">Backend is running.</p>
+          <p>Use these routes to test from browser or API client:</p>
+          <ul>
+            <li><a href="/health">/health</a> <code>GET</code> (JSON health check)</li>
+            <li><code>/api/auth/signup</code> <code>POST</code></li>
+            <li><code>/api/auth/login</code> <code>POST</code></li>
+            <li><code>/api/auth/me</code> <code>GET</code> (requires Bearer token)</li>
+          </ul>
+        </div>
+      </body>
+    </html>
+  `;
+  res.status(200).type("html").send(html);
+});
+
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok", service: "team-task-manager-api" });
 });
 
 app.use("/api/auth", authRoutes);
