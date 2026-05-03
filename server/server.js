@@ -10,7 +10,26 @@ const taskRoutes = require("./routes/taskRoutes");
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = (process.env.CORS_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Allow non-browser requests and same-origin server-to-server calls.
+      if (!origin) return callback(null, true);
+
+      if (!allowedOrigins.length || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true
+  })
+);
 app.use(express.json());
 
 app.get("/", (_req, res) => {
@@ -33,6 +52,11 @@ mongoose
   .connect(MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected");
+    if (allowedOrigins.length) {
+      console.log(`CORS origins: ${allowedOrigins.join(", ")}`);
+    } else {
+      console.log("CORS origins: all (set CORS_ORIGINS to restrict)");
+    }
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });

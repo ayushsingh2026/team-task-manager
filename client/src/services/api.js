@@ -12,6 +12,11 @@ const getApiBaseUrl = () => {
   return /\/api$/i.test(normalized) ? normalized : `${normalized}/api`;
 };
 
+if (typeof window !== "undefined") {
+  // Helps verify production env wiring from browser devtools.
+  console.log("FINAL API URL:", getApiBaseUrl());
+}
+
 const api = axios.create({
   baseURL: getApiBaseUrl()
 });
