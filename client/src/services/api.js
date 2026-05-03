@@ -1,15 +1,8 @@
 import axios from "axios";
 
-const DEFAULT_PROD_API_ORIGIN = "https://team-task-manager-production-4752.up.railway.app";
-
 const getApiBaseUrl = () => {
   const raw = process.env.REACT_APP_API_URL?.trim();
-  if (!raw) {
-    if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-      return "/api";
-    }
-    return `${DEFAULT_PROD_API_ORIGIN}/api`;
-  }
+  if (!raw) return "/api";
 
   const normalized = raw.replace(/\/+$/, "");
   return /\/api$/i.test(normalized) ? normalized : `${normalized}/api`;
