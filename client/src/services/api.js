@@ -1,17 +1,19 @@
 import axios from "axios";
 
 const getApiBaseUrl = () => {
+  const isLocalhost =
+    typeof window !== "undefined" &&
+    ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+
+  // In local dev, always use CRA proxy instead of deployed API URL.
+  if (isLocalhost) return "/api";
+
   const raw = process.env.REACT_APP_API_URL?.trim();
   if (!raw) return "/api";
 
   const normalized = raw.replace(/\/+$/, "");
   return /\/api$/i.test(normalized) ? normalized : `${normalized}/api`;
 };
-
-if (typeof window !== "undefined") {
-  // Helps verify production env wiring from browser devtools.
-  console.log("FINAL API URL:", getApiBaseUrl());
-}
 
 const api = axios.create({
   baseURL: getApiBaseUrl()

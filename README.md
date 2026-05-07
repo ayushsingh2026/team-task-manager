@@ -40,6 +40,47 @@ npm run dev
 - Frontend: `http://localhost:3000`
 - Backend: `http://localhost:5000`
 
+## Deploy on Railway
+
+Deploy this as **2 Railway services** from the same repo:
+
+1. `api` service (Node/Express backend)
+2. `web` service (React frontend static build)
+
+### 1) Backend service (`api`)
+- Root Directory: `server`
+- Build Command: `npm install`
+- Start Command: `npm start`
+- Required Variables:
+  - `PORT=5000` (Railway may override this automatically, that is fine)
+  - `MONGO_URI=your_mongodb_connection_string`
+  - `JWT_SECRET=your_strong_secret`
+  - `CORS_ORIGINS=https://<your-frontend-domain>.up.railway.app`
+
+After deploy, copy the backend public URL, for example:
+`https://your-api-name.up.railway.app`
+
+### 2) Frontend service (`web`)
+- Root Directory: `client`
+- Build Command: `npm install && npm run build`
+- Start Command: `npm start`
+- Required Variables:
+  - `REACT_APP_API_URL=https://<your-api-name>.up.railway.app`
+
+The app code automatically appends `/api` in production, so use the backend base URL without `/api`.
+
+### 3) Final wiring
+- Update backend `CORS_ORIGINS` to include your final frontend Railway domain.
+- Redeploy both services.
+- Test:
+  - Frontend opens successfully.
+  - Login/signup calls succeed.
+
+### Important security note
+If secrets were committed in `server/.env`, rotate them before production:
+- MongoDB user password
+- JWT secret
+
 
 
 Demo accounts:
@@ -69,4 +110,3 @@ Demo accounts:
   - `POST /api/tasks` (admin only)
   - `GET /api/tasks/:projectId`
   - `PUT /api/tasks/:id`
-
